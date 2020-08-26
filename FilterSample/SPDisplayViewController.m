@@ -163,6 +163,19 @@
          self.slider.value = 3;
      }
     
+    if ([_title isEqualToString:@"马赛克"]) {
+        _maximumValue = 3;
+         _minimumValue = 1;
+         if (!self.filter) {
+             self.filter = [[GPUImageMosaicFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+         ((GPUImageMosaicFilter *)self.filter).numTiles = 1;
+         self.slider.value = 0;
+     }
+    
     
     if ([_title isEqualToString:@"像素化"]) {
         _maximumValue = 0.5;
@@ -205,18 +218,72 @@
      }
     
     
-    if ([_title isEqualToString:@"马赛克"]) {
-        _maximumValue = 3;
-         _minimumValue = 1;
+    if ([_title isEqualToString:@"晕影"]) {
+        _maximumValue = 1;
+         _minimumValue = 0;
          if (!self.filter) {
-             self.filter = [[GPUImageMosaicFilter alloc] init];
+             self.filter = [[GPUImageVignetteFilter alloc] init];
               [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
               [self.sourcePicture addTarget:self.filter];
               [self.filter addTarget:self.imageView];
          }
-         ((GPUImageMosaicFilter *)self.filter).numTiles = 1;
-         self.slider.value = 0;
+        
+        ((GPUImageVignetteFilter *)self.filter).vignetteStart = 0.5;
      }
+    
+    if ([_title isEqualToString:@"漩涡"]) {
+        _maximumValue = 1;
+         _minimumValue = 0;
+         if (!self.filter) {
+             self.filter = [[GPUImageSwirlFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+        
+        ((GPUImageSwirlFilter *)self.filter).radius = 0.5;
+     }
+    
+    if ([_title isEqualToString:@"凸面镜"]) {
+        _maximumValue = 1;
+         _minimumValue = 0;
+         if (!self.filter) {
+             self.filter = [[GPUImageBulgeDistortionFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+        ((GPUImageBulgeDistortionFilter *)self.filter).radius = 0.25;
+        self.slider.value = 0.25;
+     }
+    
+    
+    if ([_title isEqualToString:@"凹面镜"]) {
+        _maximumValue = 1;
+         _minimumValue = 0;
+         if (!self.filter) {
+             self.filter = [[GPUImagePinchDistortionFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+        ((GPUImagePinchDistortionFilter *)self.filter).radius = 0.25;
+        self.slider.value = 0.25;
+     }
+    
+    if ([_title isEqualToString:@"水晶球"]) {
+        _maximumValue = 1;
+         _minimumValue = 0;
+         if (!self.filter) {
+             self.filter = [[GPUImageGlassSphereFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+        ((GPUImageGlassSphereFilter *)self.filter).radius = 0.25;
+        self.slider.value = 0.25;
+     }
+    
     
     [self.sourcePicture processImage];
 }
@@ -253,16 +320,12 @@
      }
     
     if ([_title isEqualToString:@"桑原"]) {
-         _maximumValue = 5;
-         _minimumValue = 1;
-         if (!self.filter) {
-             self.filter = [[GPUImageKuwaharaFilter alloc] init];
-              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
-              [self.sourcePicture addTarget:self.filter];
-              [self.filter addTarget:self.imageView];
-         }
-         ((GPUImageKuwaharaFilter *)self.filter).radius = 3;
-         self.slider.value = 3;
+         ((GPUImageKuwaharaFilter *)self.filter).radius = value;
+     }
+    
+    
+    if ([_title isEqualToString:@"马赛克"]) {
+        ((GPUImageMosaicFilter *)self.filter).numTiles = self.slider.value;
      }
     
     if ([_title isEqualToString:@"像素化"]) {
@@ -277,8 +340,26 @@
         ((GPUImageCrosshatchFilter *)self.filter).crossHatchSpacing = self.slider.value;
      }
     
-    if ([_title isEqualToString:@"马赛克"]) {
-         ((GPUImageMosaicFilter *)self.filter).numTiles = value;
+    if ([_title isEqualToString:@"晕影"]) {
+        ((GPUImageVignetteFilter *)self.filter).vignetteStart = self.slider.value;
+     }
+    
+    
+    if ([_title isEqualToString:@"漩涡"]) {
+        ((GPUImageSwirlFilter *)self.filter).radius = self.slider.value;
+     }
+    
+    if ([_title isEqualToString:@"凸面镜"]) {
+        ((GPUImageBulgeDistortionFilter *)self.filter).radius = self.slider.value;
+     }
+    
+    
+    if ([_title isEqualToString:@"凹面镜"]) {
+        ((GPUImagePinchDistortionFilter *)self.filter).radius = self.slider.value;
+     }
+    
+    if ([_title isEqualToString:@"水晶球"]) {
+        ((GPUImageGlassSphereFilter *)self.filter).radius = self.slider.value;
      }
     
     [self.sourcePicture processImage];
