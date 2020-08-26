@@ -213,6 +213,7 @@
 		A08A246624F63E5A00215E0C /* SPDisplayViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SPDisplayViewController.h; sourceTree = "<group>"; };
 		A08A246724F63E5A00215E0C /* SPDisplayViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SPDisplayViewController.m; sourceTree = "<group>"; };
 		A08A246A24F640E000215E0C /* WID-small.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "WID-small.jpg"; sourceTree = "<group>"; };
+		A08A246C24F65FD300215E0C /* FilterMark.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = FilterMark.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -254,6 +255,7 @@
 				A08A214024F6103900215E0C /* SPMenuViewController.m */,
 				A08A246624F63E5A00215E0C /* SPDisplayViewController.h */,
 				A08A246724F63E5A00215E0C /* SPDisplayViewController.m */,
+				A08A246C24F65FD300215E0C /* FilterMark.md */,
 				A08A215224F6128800215E0C /* LaunchScreen.storyboard */,
 				A08A214524F6103B00215E0C /* Assets.xcassets */,
 				A08A246A24F640E000215E0C /* WID-small.jpg */,

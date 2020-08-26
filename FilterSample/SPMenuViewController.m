@@ -26,7 +26,8 @@
 #pragma mark - UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    SPDisplayViewController *vc = [[SPDisplayViewController alloc] init];
+    NSArray *arr = [self.dataArray[indexPath.section] objectForKey:@"menuCategory"];
+    SPDisplayViewController *vc = [[SPDisplayViewController alloc] initWithTitle:arr[indexPath.row]];
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -56,6 +57,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"cell" forIndexPath:indexPath];
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
     NSArray *arr = [self.dataArray[indexPath.section] objectForKey:@"menuCategory"];
     cell.textLabel.text = arr[indexPath.row];
     return cell;
@@ -79,7 +81,7 @@
         _dataArray = @[
             @{
                 @"menuName" : @"🔨 颜色调校",
-                @"menuCategory" : @[@"亮度", @"曝光度"]
+                @"menuCategory" : @[@"亮度", @"曝光度", @"对比度", @"饱和度", @"伽马线"]
             },
             @{
                 @"menuName" : @"🔨 颜色调校",

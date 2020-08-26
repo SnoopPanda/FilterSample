@@ -13,57 +13,148 @@
 #define STATUS_HEIGHT [[UIApplication sharedApplication] statusBarFrame].size.height
 
 @interface SPDisplayViewController ()
+@property (nonatomic, strong) GPUImagePicture *sourcePicture;
 @property (nonatomic, strong) GPUImageView *imageView;
 @property (nonatomic, strong) UISlider *slider;
+
+@property (nonatomic, strong) GPUImageFilter *filter;
 @end
 
 @implementation SPDisplayViewController
+{
+    NSString *_title;
+    CGFloat _maximumValue;
+    CGFloat _minimumValue;
+}
+
+- (instancetype)initWithTitle:(NSString *)title
+{
+    if (self = [super init]) {
+        _title = title;
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    self.title = _title;
     
     [self.view addSubview:self.imageView];
+    
+    [self createFilter];
     [self.view addSubview:self.slider];
-    
-    UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
-    [self processImage:inputImage];
 }
 
-- (void)processImage:(UIImage *)inputImage {
-    GPUImagePicture  *sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
-
-    GPUImageTiltShiftFilter *sepiaFilter = [[GPUImageTiltShiftFilter alloc] init];
-
-    [sepiaFilter forceProcessingAtSize:self.imageView.sizeInPixels];
-
-    [sourcePicture addTarget:sepiaFilter];
-    [sepiaFilter addTarget:self.imageView];
-
-    [sourcePicture processImage];
+- (void)createFilter {
+    if ([_title isEqualToString:@"亮度"]) {
+        _maximumValue = 1;
+        _minimumValue = -1;
+        if (!self.filter) {
+            self.filter = [[GPUImageBrightnessFilter alloc] init];
+             [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+             [self.sourcePicture addTarget:self.filter];
+             [self.filter addTarget:self.imageView];
+        }
+        ((GPUImageBrightnessFilter *)self.filter).brightness = 0;
+        self.slider.value = 0;
+    }
+    
+    if ([_title isEqualToString:@"曝光度"]) {
+        _maximumValue = 10;
+        _minimumValue = -10;
+        if (!self.filter) {
+            self.filter = [[GPUImageExposureFilter alloc] init];
+             [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+             [self.sourcePicture addTarget:self.filter];
+             [self.filter addTarget:self.imageView];
+        }
+        ((GPUImageExposureFilter *)self.filter).exposure = 0;
+        self.slider.value = 0;
+    }
+    
+    if ([_title isEqualToString:@"对比度"]) {
+        _maximumValue = 4;
+        _minimumValue = 0;
+        if (!self.filter) {
+            self.filter = [[GPUImageContrastFilter alloc] init];
+             [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+             [self.sourcePicture addTarget:self.filter];
+             [self.filter addTarget:self.imageView];
+        }
+        ((GPUImageContrastFilter *)self.filter).contrast = 1;
+        self.slider.value = 1;
+    }
+    
+    if ([_title isEqualToString:@"饱和度"]) {
+         _maximumValue = 2;
+         _minimumValue = 0;
+         if (!self.filter) {
+             self.filter = [[GPUImageSaturationFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+         ((GPUImageSaturationFilter *)self.filter).saturation = 1;
+         self.slider.value = 1;
+     }
+    
+    if ([_title isEqualToString:@"伽马线"]) {
+         _maximumValue = 3;
+         _minimumValue = 0;
+         if (!self.filter) {
+             self.filter = [[GPUImageGammaFilter alloc] init];
+              [self.filter forceProcessingAtSize:self.imageView.sizeInPixels];
+              [self.sourcePicture addTarget:self.filter];
+              [self.filter addTarget:self.imageView];
+         }
+         ((GPUImageGammaFilter *)self.filter).gamma = 1;
+         self.slider.value = 1;
+     }
+    
+    [self.sourcePicture processImage];
 }
 
-- (UIImage *)addSketchFilter:(UIImage *)oldImg {
+- (void)processImageWithValue:(CGFloat)value {
     
-     // 获取数据源
-     GPUImagePicture *stillImgSrc = [[GPUImagePicture alloc] initWithImage:oldImg];
+    if ([_title isEqualToString:@"亮度"]) {
+        ((GPUImageBrightnessFilter *)self.filter).brightness = value;
+    }
     
-    // 创建一个素描滤镜
-    GPUImageTiltShiftFilter *filter = [[GPUImageTiltShiftFilter alloc] init];
-       
-    // 设置将要渲染的区域
-    [filter forceProcessingAtSize:oldImg.size];
-    [filter useNextFrameForImageCapture];
-     // 添加滤镜
-     [stillImgSrc addTarget:filter];
-     // 开始渲染
-     [stillImgSrc processImage];
+    if ([_title isEqualToString:@"曝光度"]) {
+
+        ((GPUImageExposureFilter *)self.filter).exposure = value;
+    }
     
-     UIImage *newImg = [filter imageFromCurrentFramebuffer];
-    return newImg;
+    if ([_title isEqualToString:@"对比度"]) {
+        ((GPUImageContrastFilter *)self.filter).contrast = value;
+    }
+    
+    if ([_title isEqualToString:@"饱和度"]) {
+         ((GPUImageSaturationFilter *)self.filter).saturation = value;
+     }
+    
+    if ([_title isEqualToString:@"伽马线"]) {
+         ((GPUImageGammaFilter *)self.filter).gamma = value;
+     }
+    
+    
+    [self.sourcePicture processImage];
+}
+
+- (void)valueChanged {
+    [self processImageWithValue:self.slider.value];
 }
 
 #pragma mark -
+
+- (GPUImagePicture *)sourcePicture {
+    if (!_sourcePicture) {
+        UIImage *inputImage = [UIImage imageNamed:@"WID-small.jpg"];
+        _sourcePicture = [[GPUImagePicture alloc] initWithImage:inputImage smoothlyScaleOutput:YES];
+    }
+    return _sourcePicture;
+}
 
 - (GPUImageView *)imageView {
     if (!_imageView) {
@@ -75,6 +166,9 @@
 - (UISlider *)slider {
     if (!_slider) {
         _slider = [[UISlider alloc] initWithFrame:CGRectMake(25, self.view.frame.size.height-100, self.view.frame.size.width-50, 50)];
+        _slider.maximumValue = _maximumValue;
+        _slider.minimumValue = _minimumValue;
+        [_slider addTarget:self action:@selector(valueChanged) forControlEvents:UIControlEventValueChanged];
     }
     return _slider;
 }
